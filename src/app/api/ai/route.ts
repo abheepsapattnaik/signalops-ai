@@ -4,8 +4,17 @@ import { generateAiInsight } from "@/lib/ai";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const prompt = typeof body?.prompt === "string" ? body.prompt.trim() || "We need a clearer AI-driven operating model for delivery and reliability." : "We need a clearer AI-driven operating model for delivery and reliability.";
+    let body: Record<string, unknown> = {};
+    try {
+      body = (await request.json()) as Record<string, unknown>;
+    } catch {
+      body = {};
+    }
+
+    const prompt =
+      typeof body?.prompt === "string"
+        ? body.prompt.trim() || "We need a clearer AI-driven operating model for delivery and reliability."
+        : "We need a clearer AI-driven operating model for delivery and reliability.";
     const team = typeof body?.team === "string" ? body.team : "Platform & AI Ops";
 
     const insight = generateAiInsight(prompt, team);
