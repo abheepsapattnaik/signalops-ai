@@ -82,8 +82,8 @@ export default function DashboardPage() {
           <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">AI scenario</p>
-                <h2 className="mt-2 text-2xl font-semibold">Engineering strategy prompt</h2>
+                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Product idea</p>
+                <h2 className="mt-2 text-2xl font-semibold">System design input</h2>
               </div>
               <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
                 {loading ? "Analyzing" : insight?.health ?? "Live"}
@@ -91,23 +91,23 @@ export default function DashboardPage() {
             </div>
 
             <textarea
-              value={prompt}
-              onChange={(event) => setPrompt(event.target.value)}
+              value={productIdea}
+              onChange={(event) => setProductIdea(event.target.value)}
               className="h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
             />
 
             <div>
-              <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Product idea</p>
+              <p className="text-sm uppercase tracking-[0.25em] text-slate-300">AI scenario</p>
               <textarea
-                value={productIdea}
-                onChange={(event) => setProductIdea(event.target.value)}
+                value={prompt}
+                onChange={(event) => setPrompt(event.target.value)}
                 className="mt-3 h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
               />
             </div>
 
             <div className="mt-5 flex items-center justify-between gap-4">
               <p className="text-sm text-slate-300">
-                Describe the problem and the app concept to generate an initial system design, HLD, and LLD outline.
+                Start with the product idea to shape the architecture, then add the strategy context for leadership and delivery priorities.
               </p>
               <button
                 type="button"
