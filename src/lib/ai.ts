@@ -9,7 +9,7 @@ export type ArchitectureInsight = {
   lowLevelDesign: string[];
 };
 
-function generateArchitectureFromIdea(idea: string): ArchitectureInsight {
+export function generateArchitectureFromIdea(idea: string): ArchitectureInsight {
   const cleanedIdea = idea.trim().toLowerCase();
   const isAiProduct = /ai|assistant|chat|agent|copilot|llm|recommendation|intelligence/.test(cleanedIdea);
   const isMarketplace = /marketplace|commerce|seller|buyer|orders|checkout|catalog/.test(cleanedIdea);
