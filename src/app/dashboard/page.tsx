@@ -46,7 +46,8 @@ export default function DashboardPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prompt: finalPrompt,
+        prompt: nextPrompt,
+        productIdea: ideaText,
         team: "Platform & AI Ops",
       }),
     });

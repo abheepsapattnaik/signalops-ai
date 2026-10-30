@@ -192,9 +192,15 @@ const teamContext = {
   ],
 };
 
-export function generateAiInsight(prompt: string, team: string = "Platform & AI Ops"): AiInsight {
+export function generateAiInsight(
+  prompt: string,
+  team: string = "Platform & AI Ops",
+  productIdea?: string,
+): AiInsight {
   const cleanedPrompt = prompt.trim() || "delivery and reliability leadership";
+  const cleanedProductIdea = productIdea?.trim() || cleanedPrompt;
   const text = cleanedPrompt.toLowerCase();
+  const ideaText = cleanedProductIdea.toLowerCase();
   const isDeliveryFocused = /delivery|release|launch|roadmap|velocity|backlog|priority/.test(text);
   const isReliabilityFocused = /incident|uptime|sre|stability|outage|reliability|alert/.test(text);
   const isProductFocused = /customer|insight|ux|experience|product|value|impact/.test(text);
@@ -234,7 +240,7 @@ export function generateAiInsight(prompt: string, team: string = "Platform & AI 
     recommendations.unshift("Pair AI-generated recommendations with product feedback loops so engineering trade-offs stay grounded in user impact.");
   }
 
-  const ideaArchitecture = generateArchitectureFromIdea(cleanedPrompt);
+  const ideaArchitecture = generateArchitectureFromIdea(ideaText);
   const systemDesign = ideaArchitecture.systemDesign;
   const highLevelDesign = ideaArchitecture.highLevelDesign;
   const lowLevelDesign = ideaArchitecture.lowLevelDesign;

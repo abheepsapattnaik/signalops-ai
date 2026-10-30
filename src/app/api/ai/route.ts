@@ -15,9 +15,10 @@ export async function POST(request: NextRequest) {
       typeof body?.prompt === "string"
         ? body.prompt.trim() || "We need a clearer AI-driven operating model for delivery and reliability."
         : "We need a clearer AI-driven operating model for delivery and reliability.";
+    const productIdea = typeof body?.productIdea === "string" ? body.productIdea.trim() : "";
     const team = typeof body?.team === "string" ? body.team : "Platform & AI Ops";
 
-    const insight = generateAiInsight(prompt, team);
+    const insight = generateAiInsight(prompt, team, productIdea);
     return NextResponse.json(insight);
   } catch (error) {
     return NextResponse.json(
