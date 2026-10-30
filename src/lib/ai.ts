@@ -3,6 +3,12 @@ export type RoadmapItem = {
   rationale: string;
 };
 
+export type ArchitectureInsight = {
+  systemDesign: string;
+  highLevelDesign: string[];
+  lowLevelDesign: string[];
+};
+
 export type AiInsight = {
   summary: string;
   health: string;
@@ -10,6 +16,7 @@ export type AiInsight = {
   roadmap: RoadmapItem[];
   risks: string[];
   recommendations: string[];
+  architecture: ArchitectureInsight;
 };
 
 const teamContext = {
@@ -86,6 +93,26 @@ export function generateAiInsight(prompt: string, team: string = "Platform & AI 
     recommendations.unshift("Pair AI-generated recommendations with product feedback loops so engineering trade-offs stay grounded in user impact.");
   }
 
+  const systemDesign = isReliabilityFocused
+    ? "A resilient event-driven operations plane that ingests telemetry, incident signals, and roadmap context, then correlates them into a single decision layer for engineering leadership."
+    : isProductFocused
+      ? "A product-centric decision platform that connects customer impact, engineering effort, and roadmap trade-offs into one source of truth for prioritization."
+      : "A modular platform architecture with a frontend command center, API decision layer, and operational data model that turns noisy signals into executive-ready recommendations.";
+
+  const highLevelDesign = [
+    "Separate presentation, analysis, and decisioning into dedicated layers so product, platform, and leadership views can evolve independently.",
+    "Use a centralized insight service to normalize alerts, roadmap inputs, and team context before generating recommendations.",
+    isDeliveryFocused
+      ? "Introduce a delivery confidence model that combines feature risk, change size, and release health before launch decisions are approved."
+      : "Keep a shared operational scorecard that balances customer value, software health, and execution risk across teams.",
+  ];
+
+  const lowLevelDesign = [
+    "Parse incoming prompts into structured signal buckets: delivery, reliability, product, and leadership context.",
+    "Apply deterministic rule-based scoring to rank risks, prioritize work, and surface the most actionable recommendation set.",
+    "Store architecture metadata in typed objects so UI components can render system design, HLD, and LLD views consistently.",
+  ];
+
   return {
     summary: summaryFragments.join(" "),
     health: "Stable, but not fully optimized",
@@ -94,5 +121,10 @@ export function generateAiInsight(prompt: string, team: string = "Platform & AI 
     roadmap,
     risks,
     recommendations,
+    architecture: {
+      systemDesign,
+      highLevelDesign,
+      lowLevelDesign,
+    },
   };
 }

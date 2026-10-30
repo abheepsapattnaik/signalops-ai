@@ -15,3 +15,10 @@ test('AI insight generator includes risk and recommendation planning', () => {
   assert.match(source, /recommendations/);
   assert.match(source, /delivery confidence/);
 });
+
+test('AI insight generator includes architecture decisioning for system design, HLD, and LLD', () => {
+  assert.match(source, /systemDesign/);
+  assert.match(source, /highLevelDesign/);
+  assert.match(source, /lowLevelDesign/);
+  assert.match(source, /architecture:\s*\{/);
+});

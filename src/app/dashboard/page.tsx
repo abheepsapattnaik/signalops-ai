@@ -7,6 +7,12 @@ type RoadmapItem = {
   rationale: string;
 };
 
+type ArchitectureInsight = {
+  systemDesign: string;
+  highLevelDesign: string[];
+  lowLevelDesign: string[];
+};
+
 type AiInsight = {
   summary: string;
   health: string;
@@ -14,6 +20,7 @@ type AiInsight = {
   roadmap: RoadmapItem[];
   risks: string[];
   recommendations: string[];
+  architecture: ArchitectureInsight;
 };
 
 const defaultPrompt =
@@ -165,6 +172,48 @@ export default function DashboardPage() {
                 ))}
               </ul>
             </article>
+          </section>
+        )}
+
+        {insight && (
+          <section className="mt-10 rounded-3xl border border-violet-400/20 bg-violet-500/5 p-6">
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">Architecture design</p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">System design, HLD, and LLD</h2>
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3">
+              <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">System design</p>
+                <p className="mt-4 text-sm leading-7 text-slate-200">{insight.architecture.systemDesign}</p>
+              </article>
+
+              <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">HLD</p>
+                <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
+                  {insight.architecture.highLevelDesign.map((item) => (
+                    <li key={item} className="flex gap-3">
+                      <span className="mt-2 h-2 w-2 rounded-full bg-violet-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+
+              <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">LLD</p>
+                <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
+                  {insight.architecture.lowLevelDesign.map((item) => (
+                    <li key={item} className="flex gap-3">
+                      <span className="mt-2 h-2 w-2 rounded-full bg-violet-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </div>
           </section>
         )}
       </div>
