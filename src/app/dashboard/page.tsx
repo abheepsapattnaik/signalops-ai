@@ -29,16 +29,64 @@ const defaultPrompt =
 const defaultIdea =
   "A platform that helps engineering teams triage incidents, predict delivery risk, and surface leadership-ready operational recommendations in one dashboard.";
 
+function deriveLeadershipSignals(idea: string) {
+  const text = idea.toLowerCase();
+
+  let deliveryHealth = 82;
+  let aiConfidence = "Medium";
+  let riskTrend = "Down 8%";
+
+  if (/marketplace|payments|checkout|orders|booking/.test(text)) {
+    deliveryHealth = 76;
+    aiConfidence = "High";
+    riskTrend = "Down 5%";
+  } else if (/realtime|chat|live|presence|stream|video|audio/.test(text)) {
+    deliveryHealth = 74;
+    aiConfidence = "Medium";
+    riskTrend = "Up 4%";
+  } else if (/ai|assistant|ml|llm|recommendation|intelligence/.test(text)) {
+    deliveryHealth = 88;
+    aiConfidence = "High";
+    riskTrend = "Down 11%";
+  } else if (/analytics|dashboard|insights|signals|monitoring/.test(text)) {
+    deliveryHealth = 86;
+    aiConfidence = "High";
+    riskTrend = "Down 10%";
+  } else if (/wallet|finance|billing|ledger|transactions/.test(text)) {
+    deliveryHealth = 72;
+    aiConfidence = "High";
+    riskTrend = "Down 6%";
+  } else if (/social|community|feed|posts|followers/.test(text)) {
+    deliveryHealth = 79;
+    aiConfidence = "Medium";
+    riskTrend = "Up 2%";
+  }
+
+  if (/risk|security|trust|fraud|payments/.test(text)) {
+    riskTrend = "Up 7%";
+  }
+
+  if (/reliability|incident|alert|uptime/.test(text)) {
+    aiConfidence = "Very high";
+    deliveryHealth = Math.max(70, deliveryHealth - 2);
+  }
+
+  return {
+    deliveryHealth,
+    aiConfidence,
+    riskTrend,
+  };
+}
+
 export default function DashboardPage() {
-  const [prompt, setPrompt] = useState(defaultPrompt);
   const [productIdea, setProductIdea] = useState(defaultIdea);
   const [insight, setInsight] = useState<AiInsight | null>(null);
   const [loading, setLoading] = useState(true);
+  const leadershipSignals = deriveLeadershipSignals(productIdea);
 
-  const loadInsight = async (nextPrompt = prompt) => {
+  const loadInsight = async () => {
     setLoading(true);
     const ideaText = productIdea.trim();
-    const finalPrompt = ideaText ? `${nextPrompt}\n\nApp idea: ${ideaText}` : nextPrompt;
 
     const response = await fetch("/api/ai", {
       method: "POST",
@@ -46,7 +94,7 @@ export default function DashboardPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prompt: nextPrompt,
+        prompt: defaultPrompt,
         productIdea: ideaText,
         team: "Platform & AI Ops",
       }),
@@ -58,7 +106,7 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    void loadInsight(defaultPrompt);
+    void loadInsight();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -93,21 +141,12 @@ export default function DashboardPage() {
             <textarea
               value={productIdea}
               onChange={(event) => setProductIdea(event.target.value)}
-              className="h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
+              className="h-40 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
             />
-
-            <div>
-              <p className="text-sm uppercase tracking-[0.25em] text-slate-300">AI scenario</p>
-              <textarea
-                value={prompt}
-                onChange={(event) => setPrompt(event.target.value)}
-                className="mt-3 h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
-              />
-            </div>
 
             <div className="mt-5 flex items-center justify-between gap-4">
               <p className="text-sm text-slate-300">
-                Start with the product idea to shape the architecture, then add the strategy context for leadership and delivery priorities.
+                Describe the product concept and its core workflow to generate a tailored system design, HLD, and LLD outline.
               </p>
               <button
                 type="button"
@@ -124,15 +163,15 @@ export default function DashboardPage() {
             <div className="mt-4 space-y-4">
               <div>
                 <p className="text-sm text-slate-300">Delivery health</p>
-                <p className="mt-2 text-4xl font-semibold">89%</p>
+                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.deliveryHealth}%</p>
               </div>
               <div>
                 <p className="text-sm text-slate-300">AI confidence</p>
-                <p className="mt-2 text-4xl font-semibold">High</p>
+                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.aiConfidence}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-300">Risk trend</p>
-                <p className="mt-2 text-4xl font-semibold">Down 12%</p>
+                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.riskTrend}</p>
               </div>
             </div>
           </div>
