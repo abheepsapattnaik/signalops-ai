@@ -26,20 +26,27 @@ type AiInsight = {
 const defaultPrompt =
   "We are scaling a platform organization and need to balance delivery speed, customer reliability, and AI-assisted decision quality while keeping costs and team capacity under control.";
 
+const defaultIdea =
+  "A platform that helps engineering teams triage incidents, predict delivery risk, and surface leadership-ready operational recommendations in one dashboard.";
+
 export default function DashboardPage() {
   const [prompt, setPrompt] = useState(defaultPrompt);
+  const [productIdea, setProductIdea] = useState(defaultIdea);
   const [insight, setInsight] = useState<AiInsight | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadInsight = async (nextPrompt = prompt) => {
     setLoading(true);
+    const ideaText = productIdea.trim();
+    const finalPrompt = ideaText ? `${nextPrompt}\n\nApp idea: ${ideaText}` : nextPrompt;
+
     const response = await fetch("/api/ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prompt: nextPrompt,
+        prompt: finalPrompt,
         team: "Platform & AI Ops",
       }),
     });
@@ -71,7 +78,7 @@ export default function DashboardPage() {
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
+          <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-sm uppercase tracking-[0.25em] text-slate-300">AI scenario</p>
@@ -85,12 +92,21 @@ export default function DashboardPage() {
             <textarea
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
-              className="h-32 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
+              className="h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
             />
+
+            <div>
+              <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Product idea</p>
+              <textarea
+                value={productIdea}
+                onChange={(event) => setProductIdea(event.target.value)}
+                className="mt-3 h-28 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
+              />
+            </div>
 
             <div className="mt-5 flex items-center justify-between gap-4">
               <p className="text-sm text-slate-300">
-                Scenario designed to demonstrate AI-driven leadership decision making.
+                Describe the problem and the app concept to generate an initial system design, HLD, and LLD outline.
               </p>
               <button
                 type="button"
