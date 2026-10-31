@@ -122,6 +122,43 @@ The backend expects PostgreSQL on `localhost:5432` with these local development 
 - username: `signalops`
 - password: `signalops`
 
+### AI agent configuration for the backend
+
+The backend now decides whether to use the external AI agent or the local heuristic based on the UI selection.
+
+The preferred configuration is stored in PostgreSQL instead of only in the shell. A table called `app_settings` is created automatically by Hibernate, and you can insert the provider values directly into it.
+
+Seed script:
+
+```bash
+docker exec -i signalops-ai-postgres psql -U signalops -d signalops_ai < backend/scripts/seed_app_settings.sql
+```
+
+Before running the script, edit `backend/scripts/seed_app_settings.sql` and replace the placeholder key with your real provider key.
+
+Example SQL:
+
+```sql
+INSERT INTO app_settings (setting_key, setting_value, updated_at)
+VALUES
+  ('AI_API_KEY', 'your_provider_key', NOW()),
+  ('AI_MODEL', 'openrouter/auto', NOW()),
+  ('AI_BASE_URL', 'https://openrouter.ai/api/v1', NOW())
+ON CONFLICT (setting_key) DO UPDATE
+SET setting_value = EXCLUDED.setting_value,
+    updated_at = NOW();
+```
+
+If no DB value exists, the backend falls back to shell-level environment variables for backward compatibility.
+
+```bash
+export AI_API_KEY=your_provider_key
+export AI_MODEL=openrouter/auto
+export AI_BASE_URL=https://openrouter.ai/api/v1
+```
+
+If both are missing, it automatically falls back to the built-in local heuristic logic.
+
 ### Stop services
 
 Use this to stop both the backend and the PostgreSQL container:
@@ -138,6 +175,14 @@ The script will:
 - kill any leftover local PostgreSQL process still listening on port 5432
 
 ### Frontend
+
+The frontend now calls the backend API at `http://localhost:8080` by default. If needed, you can override it with:
+
+```bash
+export NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
+```
+
+Then run:
 
 ```bash
 cd frontend

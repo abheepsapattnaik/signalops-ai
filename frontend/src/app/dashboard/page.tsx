@@ -53,7 +53,10 @@ export default function DashboardPage() {
     setLoading(true);
     const ideaText = productIdea.trim();
 
-    const response = await fetch("/api/ai", {
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "") || "http://localhost:8080";
+
+    const response = await fetch(`${backendUrl}/api/insights/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
