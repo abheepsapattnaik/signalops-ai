@@ -11,6 +11,61 @@ export type ArchitectureInsight = {
   lowLevelDesign: string[];
 };
 
+export type LeadershipSignals = {
+  deliveryHealth: number;
+  aiConfidence: string;
+  riskTrend: string;
+};
+
+export function deriveLeadershipSignals(idea: string): LeadershipSignals {
+  const text = idea.toLowerCase();
+
+  let deliveryHealth = 82;
+  let aiConfidence = "Medium";
+  let riskTrend = "Down 8%";
+
+  if (/marketplace|payments|checkout|orders|booking/.test(text)) {
+    deliveryHealth = 76;
+    aiConfidence = "High";
+    riskTrend = "Down 5%";
+  } else if (/realtime|chat|live|presence|stream|video|audio/.test(text)) {
+    deliveryHealth = 74;
+    aiConfidence = "Medium";
+    riskTrend = "Up 4%";
+  } else if (/ai|assistant|ml|llm|recommendation|intelligence/.test(text)) {
+    deliveryHealth = 88;
+    aiConfidence = "High";
+    riskTrend = "Down 11%";
+  } else if (/analytics|dashboard|insights|signals|monitoring/.test(text)) {
+    deliveryHealth = 86;
+    aiConfidence = "High";
+    riskTrend = "Down 10%";
+  } else if (/wallet|finance|billing|ledger|transactions/.test(text)) {
+    deliveryHealth = 72;
+    aiConfidence = "High";
+    riskTrend = "Down 6%";
+  } else if (/social|community|feed|posts|followers/.test(text)) {
+    deliveryHealth = 79;
+    aiConfidence = "Medium";
+    riskTrend = "Up 2%";
+  }
+
+  if (/risk|security|trust|fraud|payments/.test(text)) {
+    riskTrend = "Up 7%";
+  }
+
+  if (/reliability|incident|alert|uptime/.test(text)) {
+    aiConfidence = "Very high";
+    deliveryHealth = Math.max(70, deliveryHealth - 2);
+  }
+
+  return {
+    deliveryHealth,
+    aiConfidence,
+    riskTrend,
+  };
+}
+
 export function generateArchitectureFromIdea(idea: string): ArchitectureInsight {
   const cleanedIdea = idea.trim().toLowerCase();
   const isAiProduct = /ai|assistant|chat|agent|copilot|llm|recommendation|intelligence/.test(
@@ -166,6 +221,7 @@ export type AiInsight = {
   risks: string[];
   recommendations: string[];
   architecture: ArchitectureInsight;
+  leadershipSignals?: LeadershipSignals;
 };
 
 export function generateAiInsight(
@@ -227,6 +283,7 @@ export function generateAiInsight(
   const systemDesign = ideaArchitecture.systemDesign;
   const highLevelDesign = ideaArchitecture.highLevelDesign;
   const lowLevelDesign = ideaArchitecture.lowLevelDesign;
+  const leadershipSignals = deriveLeadershipSignals(cleanedProductIdea);
 
   return {
     summary: summaryFragments.join(" "),
@@ -241,5 +298,6 @@ export function generateAiInsight(
       highLevelDesign,
       lowLevelDesign,
     },
+    leadershipSignals,
   };
 }

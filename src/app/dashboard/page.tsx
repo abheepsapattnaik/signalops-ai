@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { deriveLeadershipSignals } from "@/lib/ai";
 import { DEFAULT_IDEA, DEFAULT_PROMPT } from "@/lib/insight-content";
 import { DASHBOARD_COPY } from "@/lib/dashboard-content";
 
@@ -16,6 +17,12 @@ type ArchitectureInsight = {
   lowLevelDesign: string[];
 };
 
+type LeadershipSignals = {
+  deliveryHealth: number;
+  aiConfidence: string;
+  riskTrend: string;
+};
+
 type AiInsight = {
   summary: string;
   health: string;
@@ -24,62 +31,23 @@ type AiInsight = {
   risks: string[];
   recommendations: string[];
   architecture: ArchitectureInsight;
+  leadershipSignals?: LeadershipSignals;
+  source?: "ai-agent" | "local-heuristic";
 };
 
-function deriveLeadershipSignals(idea: string) {
-  const text = idea.toLowerCase();
-
-  let deliveryHealth = 82;
-  let aiConfidence = "Medium";
-  let riskTrend = "Down 8%";
-
-  if (/marketplace|payments|checkout|orders|booking/.test(text)) {
-    deliveryHealth = 76;
-    aiConfidence = "High";
-    riskTrend = "Down 5%";
-  } else if (/realtime|chat|live|presence|stream|video|audio/.test(text)) {
-    deliveryHealth = 74;
-    aiConfidence = "Medium";
-    riskTrend = "Up 4%";
-  } else if (/ai|assistant|ml|llm|recommendation|intelligence/.test(text)) {
-    deliveryHealth = 88;
-    aiConfidence = "High";
-    riskTrend = "Down 11%";
-  } else if (/analytics|dashboard|insights|signals|monitoring/.test(text)) {
-    deliveryHealth = 86;
-    aiConfidence = "High";
-    riskTrend = "Down 10%";
-  } else if (/wallet|finance|billing|ledger|transactions/.test(text)) {
-    deliveryHealth = 72;
-    aiConfidence = "High";
-    riskTrend = "Down 6%";
-  } else if (/social|community|feed|posts|followers/.test(text)) {
-    deliveryHealth = 79;
-    aiConfidence = "Medium";
-    riskTrend = "Up 2%";
-  }
-
-  if (/risk|security|trust|fraud|payments/.test(text)) {
-    riskTrend = "Up 7%";
-  }
-
-  if (/reliability|incident|alert|uptime/.test(text)) {
-    aiConfidence = "Very high";
-    deliveryHealth = Math.max(70, deliveryHealth - 2);
-  }
-
-  return {
-    deliveryHealth,
-    aiConfidence,
-    riskTrend,
-  };
-}
+type GenerationSource = "ai" | "local";
 
 export default function DashboardPage() {
   const [productIdea, setProductIdea] = useState(DEFAULT_IDEA);
   const [insight, setInsight] = useState<AiInsight | null>(null);
-  const [loading, setLoading] = useState(true);
-  const leadershipSignals = deriveLeadershipSignals(productIdea);
+  const [loading, setLoading] = useState(false);
+  const [generationSource, setGenerationSource] = useState<GenerationSource>("ai");
+  const leadershipSignals = insight?.leadershipSignals ?? deriveLeadershipSignals(productIdea);
+  const aiSourceLabel = insight
+    ? insight.source === "ai-agent"
+      ? "AI agent"
+      : "Local heuristic"
+    : "Not started";
 
   const loadInsight = async () => {
     setLoading(true);
@@ -94,6 +62,7 @@ export default function DashboardPage() {
         prompt: DEFAULT_PROMPT,
         productIdea: ideaText,
         team: "Platform & AI Ops",
+        source: generationSource,
       }),
     });
 
@@ -101,15 +70,6 @@ export default function DashboardPage() {
     setInsight(data);
     setLoading(false);
   };
-
-  useEffect(() => {
-    const initializeInsight = async () => {
-      await loadInsight();
-    };
-
-    void initializeInsight();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -119,87 +79,166 @@ export default function DashboardPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">
               {DASHBOARD_COPY.header.eyebrow}
             </p>
-            <h1 className="mt-2 text-3xl font-semibold">{DASHBOARD_COPY.header.title}</h1>
+            <h1 className="mt-2 text-3xl font-semibold text-slate-50">
+              {DASHBOARD_COPY.header.title}
+            </h1>
           </div>
           <Link
             href="/"
-            className="rounded-full border border-cyan-400/50 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
+            className="rounded-full border border-cyan-400/50 bg-cyan-500/5 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
           >
             {DASHBOARD_COPY.header.backLink}
           </Link>
         </header>
 
-        <section className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-          <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
-            <div className="mb-4 flex items-center justify-between">
+        <section className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
+          <div className="space-y-6 rounded-[28px] border border-white/10 bg-slate-900/80 p-6 shadow-[0_24px_80px_rgba(4,12,24,0.7)] ring-1 ring-cyan-500/10 lg:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm uppercase tracking-[0.25em] text-slate-300">
                   {DASHBOARD_COPY.productIdea.eyebrow}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold">{DASHBOARD_COPY.productIdea.title}</h2>
+                <h2 className="mt-2 text-2xl font-semibold lg:text-[2rem]">
+                  {DASHBOARD_COPY.productIdea.title}
+                </h2>
               </div>
-              <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                {loading
-                  ? DASHBOARD_COPY.productIdea.status.analyzing
-                  : (insight?.health ?? DASHBOARD_COPY.productIdea.status.live)}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+                  {loading
+                    ? DASHBOARD_COPY.productIdea.status.analyzing
+                    : (insight?.health ?? DASHBOARD_COPY.productIdea.status.live)}
+                </span>
+                <span className="rounded-full border border-violet-400/40 bg-violet-500/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-violet-200">
+                  {loading ? "Preparing" : insight ? aiSourceLabel : "Awaiting"}
+                </span>
+              </div>
             </div>
 
             <textarea
               value={productIdea}
               onChange={(event) => setProductIdea(event.target.value)}
-              className="h-40 w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-sm text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
+              className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-base text-slate-100 outline-none ring-0 transition focus:border-cyan-400"
             />
 
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <p className="text-sm text-slate-300">{DASHBOARD_COPY.productIdea.description}</p>
+            <div className="rounded-2xl border border-violet-400/20 bg-violet-500/5 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] uppercase tracking-[0.25em] text-violet-200/80">
+                  Insight source
+                </p>
+                <div className="inline-flex rounded-full border border-violet-400/30 bg-slate-950/40 p-1">
+                  {(
+                    [
+                      { value: "ai", label: "AI agent" },
+                      { value: "local", label: "Local" },
+                    ] as const
+                  ).map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setGenerationSource(option.value)}
+                      className={`rounded-full px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] transition ${
+                        generationSource === option.value
+                          ? "bg-violet-500 text-white"
+                          : "text-violet-200/80 hover:text-white"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-sm font-medium text-slate-100">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${
+                    loading
+                      ? "bg-amber-400"
+                      : !insight
+                        ? "bg-slate-500"
+                        : aiSourceLabel === "AI agent"
+                          ? "bg-emerald-400"
+                          : "bg-violet-400"
+                  }`}
+                />
+                <span>
+                  {loading
+                    ? generationSource === "ai"
+                      ? "Preparing AI analysis..."
+                      : "Preparing local analysis..."
+                    : !insight
+                      ? "Awaiting generate insights"
+                      : aiSourceLabel === "AI agent"
+                        ? "AI agent response"
+                        : "Local heuristic fallback"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-xl text-sm leading-6 text-slate-300">
+                {DASHBOARD_COPY.productIdea.description}
+              </p>
               <button
                 type="button"
                 onClick={() => void loadInsight()}
                 className="rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
               >
-                {loading
-                  ? DASHBOARD_COPY.productIdea.button.generating
-                  : DASHBOARD_COPY.productIdea.button.default}
+                <span className="inline-flex items-center gap-2">
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      generationSource === "ai" ? "bg-emerald-500" : "bg-violet-500"
+                    }`}
+                  />
+                  {loading
+                    ? DASHBOARD_COPY.productIdea.button.generating
+                    : `${DASHBOARD_COPY.productIdea.button.default} (${generationSource === "ai" ? "AI" : "Local"})`}
+                </span>
               </button>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 to-slate-900 p-6">
+          <div className="rounded-[30px] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 via-slate-900/85 to-slate-900 p-6 shadow-[0_20px_60px_rgba(14,116,144,0.15)] lg:p-7">
             <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">
               {DASHBOARD_COPY.leadershipSignal.eyebrow}
             </p>
-            <div className="mt-4 space-y-4">
-              <div>
+            <div className="mt-6 space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
                 <p className="text-sm text-slate-300">
                   {DASHBOARD_COPY.leadershipSignal.deliveryHealth}
                 </p>
-                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.deliveryHealth}%</p>
+                <p className="mt-3 text-4xl font-semibold leading-none text-white">
+                  {Math.round(leadershipSignals.deliveryHealth)}%
+                </p>
               </div>
-              <div>
+
+              <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
                 <p className="text-sm text-slate-300">
                   {DASHBOARD_COPY.leadershipSignal.aiConfidence}
                 </p>
-                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.aiConfidence}</p>
+                <p className="mt-3 text-xl font-semibold leading-snug text-white">
+                  {leadershipSignals.aiConfidence}
+                </p>
               </div>
-              <div>
+
+              <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
                 <p className="text-sm text-slate-300">
                   {DASHBOARD_COPY.leadershipSignal.riskTrend}
                 </p>
-                <p className="mt-2 text-4xl font-semibold">{leadershipSignals.riskTrend}</p>
+                <p className="mt-3 text-xl font-semibold leading-snug text-white">
+                  {leadershipSignals.riskTrend}
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {insight && (
-          <section className="mt-10 rounded-3xl border border-violet-400/20 bg-violet-500/5 p-6">
+          <section className="mt-10 rounded-3xl border border-violet-400/20 bg-violet-500/5 p-6 lg:p-8">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.25em] text-violet-300">
                   {DASHBOARD_COPY.architecture.eyebrow}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">
+                <h2 className="mt-2 text-2xl font-semibold text-white lg:text-[2rem]">
                   {DASHBOARD_COPY.architecture.title}
                 </h2>
               </div>
@@ -220,8 +259,8 @@ export default function DashboardPage() {
                   {DASHBOARD_COPY.architecture.cards.highLevelDesign}
                 </p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
-                  {insight.architecture.highLevelDesign.map((item) => (
-                    <li key={item} className="flex gap-3">
+                  {insight.architecture.highLevelDesign.map((item, index) => (
+                    <li key={`${item}-${index}`} className="flex gap-3">
                       <span className="mt-2 h-2 w-2 rounded-full bg-violet-400" />
                       <span>{item}</span>
                     </li>
@@ -234,8 +273,8 @@ export default function DashboardPage() {
                   {DASHBOARD_COPY.architecture.cards.lowLevelDesign}
                 </p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
-                  {insight.architecture.lowLevelDesign.map((item) => (
-                    <li key={item} className="flex gap-3">
+                  {insight.architecture.lowLevelDesign.map((item, index) => (
+                    <li key={`${item}-${index}`} className="flex gap-3">
                       <span className="mt-2 h-2 w-2 rounded-full bg-violet-400" />
                       <span>{item}</span>
                     </li>
@@ -267,8 +306,8 @@ export default function DashboardPage() {
                 {DASHBOARD_COPY.risks.eyebrow}
               </p>
               <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-100">
-                {insight.risks.map((risk) => (
-                  <li key={risk} className="flex gap-2">
+                {insight.risks.map((risk, index) => (
+                  <li key={`${risk}-${index}`} className="flex gap-2">
                     <span className="mt-1.5 h-2.5 w-2.5 rounded-full bg-amber-400" />
                     <span>{risk}</span>
                   </li>
@@ -302,9 +341,9 @@ export default function DashboardPage() {
                 {DASHBOARD_COPY.recommendations.eyebrow}
               </p>
               <ul className="mt-5 space-y-4">
-                {insight.recommendations.map((recommendation) => (
+                {insight.recommendations.map((recommendation, index) => (
                   <li
-                    key={recommendation}
+                    key={`${recommendation}-${index}`}
                     className="flex gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4 text-sm leading-6 text-slate-100"
                   >
                     <span className="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-400" />

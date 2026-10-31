@@ -34,3 +34,31 @@ test("AI insight generator includes architecture decisioning for system design, 
   assert.match(aiSource, /lowLevelDesign/);
   assert.match(aiSource, /architecture:\s*\{/);
 });
+
+test("AI agent prompt explicitly requests system design, HLD, and LLD data from the model", () => {
+  const aiAgentSource = readFileSync(new URL("../src/lib/ai-agent.ts", import.meta.url), "utf8");
+
+  assert.match(aiAgentSource, /system design, HLD, and LLD/i);
+  assert.match(aiAgentSource, /architecture must include systemDesign/i);
+  assert.match(aiAgentSource, /highLevelDesign and lowLevelDesign as arrays/i);
+});
+
+test("AI responses include leadership signals alongside architecture guidance", () => {
+  const aiAgentSource = readFileSync(new URL("../src/lib/ai-agent.ts", import.meta.url), "utf8");
+
+  assert.match(aiSource, /leadershipSignals/);
+  assert.match(aiSource, /deliveryHealth/);
+  assert.match(aiSource, /aiConfidence/);
+  assert.match(aiSource, /riskTrend/);
+  assert.match(aiAgentSource, /Watchlist:/i);
+  assert.match(aiAgentSource, /Never return 'Amber'/i);
+});
+
+test("API route respects explicit source selection and falls back only when AI is selected and fails", () => {
+  const routeSource = readFileSync(new URL("../src/app/api/ai/route.ts", import.meta.url), "utf8");
+
+  assert.match(routeSource, /preferredSource/);
+  assert.match(routeSource, /source === "local"/);
+  assert.match(routeSource, /fetchInsightFromAiAgent/);
+  assert.match(routeSource, /fallbackInsight/);
+});

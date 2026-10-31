@@ -51,7 +51,25 @@ The AI layer is intentionally designed to look like a practical leadership assis
 - roadmap suggestions grounded in business context
 - leadership-friendly guidance instead of raw technical output
 
-This is a strong interview story because it shows AI as an execution accelerator in a real engineering context.
+The app supports an optional real AI provider behind the API route. If `AI_API_KEY` is configured, the app will call an external AI service for generated insights. If it is not configured, the app gracefully falls back to the built-in local heuristic logic so the project still works without a vendor account.
+
+## AI provider setup
+
+Create a local `.env.local` file from the example and add your own free-tier or trial API key:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set values such as:
+
+```bash
+AI_API_KEY=your_provider_key
+AI_MODEL=openrouter/auto
+AI_BASE_URL=https://openrouter.ai/api/v1
+```
+
+This keeps the project portable while allowing real AI output when an API key is available.
 
 ## Run locally
 

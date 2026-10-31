@@ -189,9 +189,9 @@ export default function Home() {
                 </p>
               </div>
               <ul className="space-y-3 text-slate-200">
-                {featureItems.map((item) => (
+                {featureItems.map((item, index) => (
                   <li
-                    key={item}
+                    key={`${item}-${index}`}
                     className="flex gap-3 rounded-2xl border border-white/10 bg-slate-950/40 p-4"
                   >
                     <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-400" />
