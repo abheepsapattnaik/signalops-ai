@@ -31,15 +31,22 @@ SignalOps AI is a leadership command center for engineering and platform teams. 
 ## Project structure
 
 ```bash
-src/
-  app/
-    api/ai/route.ts
-    dashboard/page.tsx
-    globals.css
-    layout.tsx
-    page.tsx
-  lib/
-    ai.ts
+backend/
+  # Java Spring Boot service
+frontend/
+  src/
+    app/
+      api/ai/route.ts
+      dashboard/page.tsx
+      globals.css
+      layout.tsx
+      page.tsx
+    lib/
+      ai.ts
+  public/
+  package.json
+  next.config.ts
+  tsconfig.json
 ```
 
 ## How AI is used
@@ -55,9 +62,10 @@ The app supports an optional real AI provider behind the API route. If `AI_API_K
 
 ## AI provider setup
 
-Create a local `.env.local` file from the example and add your own free-tier or trial API key:
+Create a local `.env.local` file inside the frontend app from the example and add your own free-tier or trial API key:
 
 ```bash
+cd frontend
 cp .env.example .env.local
 ```
 
@@ -74,6 +82,7 @@ This keeps the project portable while allowing real AI output when an API key is
 ## Run locally
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
