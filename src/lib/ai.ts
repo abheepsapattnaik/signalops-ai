@@ -1,3 +1,5 @@
+import { TEAM_CONTEXT } from "./insight-content";
+
 export type RoadmapItem = {
   title: string;
   rationale: string;
@@ -160,38 +162,6 @@ export type AiInsight = {
   architecture: ArchitectureInsight;
 };
 
-const teamContext = {
-  summary:
-    "This platform is maintaining strong delivery velocity while the biggest risk is operational scale, decision latency, and inconsistent prioritization across teams.",
-  roadmap: [
-    {
-      title: "AI-assisted backlog prioritization",
-      rationale:
-        "Classify incoming work by customer impact, engineering cost, and delivery risk to reduce debate and improve predictability.",
-    },
-    {
-      title: "Proactive incident intelligence",
-      rationale:
-        "Correlate alerts, ownership, and historical resolution patterns so engineers resolve issues faster with less context switching.",
-    },
-    {
-      title: "Release confidence scoring",
-      rationale:
-        "Blend quality signals, product risk, and change size to estimate rollout confidence before launch windows.",
-    },
-  ],
-  risks: [
-    "Decision quality drifts when prioritization is driven by urgency instead of strategic value.",
-    "SRE and product teams operate from fragmented signals, creating inconsistent execution.",
-    "Change risk rises as more features are launched without a clear confidence model.",
-  ],
-  recommendations: [
-    "Standardize a single operating model for prioritization, including impact, risk, and effort scoring.",
-    "Use AI summaries to reduce onboarding time for incident triage and release blockers.",
-    "Create a leadership dashboard with trend-based metrics so stakeholders can act on signals before they become escalations.",
-  ],
-};
-
 export function generateAiInsight(
   prompt: string,
   team: string = "Platform & AI Ops",
@@ -219,7 +189,7 @@ export function generateAiInsight(
       : "A balanced scorecard should tie engineering decisions back to customer value, platform quality, and delivery risk.",
   ];
 
-  const roadmap = [...teamContext.roadmap];
+  const roadmap = [...TEAM_CONTEXT.roadmap];
   if (isTeamFocused) {
     roadmap.unshift({
       title: "Leadership operating rhythm",
@@ -227,12 +197,12 @@ export function generateAiInsight(
     });
   }
 
-  const risks = [...teamContext.risks];
+  const risks = [...TEAM_CONTEXT.risks];
   if (isReliabilityFocused) {
     risks.unshift("Incidents are likely to recur when alert correlation is incomplete and ownership signals are not consistent.");
   }
 
-  const recommendations = [...teamContext.recommendations];
+  const recommendations = [...TEAM_CONTEXT.recommendations];
   if (isDeliveryFocused) {
     recommendations.unshift("Use AI to highlight release blockers, dependencies, and sequencing risks before a launch decision is made.");
   }

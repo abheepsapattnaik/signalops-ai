@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { DEFAULT_IDEA, DEFAULT_PROMPT } from "@/lib/insight-content";
+import { DASHBOARD_COPY } from "@/lib/dashboard-content";
 
 type RoadmapItem = {
   title: string;
@@ -22,12 +24,6 @@ type AiInsight = {
   recommendations: string[];
   architecture: ArchitectureInsight;
 };
-
-const defaultPrompt =
-  "We are scaling a platform organization and need to balance delivery speed, customer reliability, and AI-assisted decision quality while keeping costs and team capacity under control.";
-
-const defaultIdea =
-  "A platform that helps engineering teams triage incidents, predict delivery risk, and surface leadership-ready operational recommendations in one dashboard.";
 
 function deriveLeadershipSignals(idea: string) {
   const text = idea.toLowerCase();
@@ -79,7 +75,7 @@ function deriveLeadershipSignals(idea: string) {
 }
 
 export default function DashboardPage() {
-  const [productIdea, setProductIdea] = useState(defaultIdea);
+  const [productIdea, setProductIdea] = useState(DEFAULT_IDEA);
   const [insight, setInsight] = useState<AiInsight | null>(null);
   const [loading, setLoading] = useState(true);
   const leadershipSignals = deriveLeadershipSignals(productIdea);
@@ -94,7 +90,7 @@ export default function DashboardPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prompt: defaultPrompt,
+        prompt: DEFAULT_PROMPT,
         productIdea: ideaText,
         team: "Platform & AI Ops",
       }),
@@ -115,14 +111,14 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-6 py-10">
         <header className="mb-10 flex items-center justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">SignalOps AI</p>
-            <h1 className="mt-2 text-3xl font-semibold">Leadership command center</h1>
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">{DASHBOARD_COPY.header.eyebrow}</p>
+            <h1 className="mt-2 text-3xl font-semibold">{DASHBOARD_COPY.header.title}</h1>
           </div>
           <a
             href="/"
             className="rounded-full border border-cyan-400/50 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
           >
-            Back to overview
+            {DASHBOARD_COPY.header.backLink}
           </a>
         </header>
 
@@ -130,11 +126,11 @@ export default function DashboardPage() {
           <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Product idea</p>
-                <h2 className="mt-2 text-2xl font-semibold">System design input</h2>
+                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.productIdea.eyebrow}</p>
+                <h2 className="mt-2 text-2xl font-semibold">{DASHBOARD_COPY.productIdea.title}</h2>
               </div>
               <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                {loading ? "Analyzing" : insight?.health ?? "Live"}
+                {loading ? DASHBOARD_COPY.productIdea.status.analyzing : insight?.health ?? DASHBOARD_COPY.productIdea.status.live}
               </span>
             </div>
 
@@ -145,32 +141,30 @@ export default function DashboardPage() {
             />
 
             <div className="mt-5 flex items-center justify-between gap-4">
-              <p className="text-sm text-slate-300">
-                Describe the product concept and its core workflow to generate a tailored system design, HLD, and LLD outline.
-              </p>
+              <p className="text-sm text-slate-300">{DASHBOARD_COPY.productIdea.description}</p>
               <button
                 type="button"
                 onClick={() => void loadInsight()}
                 className="rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
               >
-                {loading ? "Generating..." : "Generate insights"}
+                {loading ? DASHBOARD_COPY.productIdea.button.generating : DASHBOARD_COPY.productIdea.button.default}
               </button>
             </div>
           </div>
 
           <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 to-slate-900 p-6">
-            <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">Leadership signal</p>
+            <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">{DASHBOARD_COPY.leadershipSignal.eyebrow}</p>
             <div className="mt-4 space-y-4">
               <div>
-                <p className="text-sm text-slate-300">Delivery health</p>
+                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.deliveryHealth}</p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.deliveryHealth}%</p>
               </div>
               <div>
-                <p className="text-sm text-slate-300">AI confidence</p>
+                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.aiConfidence}</p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.aiConfidence}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-300">Risk trend</p>
+                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.riskTrend}</p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.riskTrend}</p>
               </div>
             </div>
@@ -181,19 +175,19 @@ export default function DashboardPage() {
           <section className="mt-10 rounded-3xl border border-violet-400/20 bg-violet-500/5 p-6">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">Architecture design</p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">System design, HLD, and LLD</h2>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.eyebrow}</p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">{DASHBOARD_COPY.architecture.title}</h2>
               </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">System design</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.systemDesign}</p>
                 <p className="mt-4 text-sm leading-7 text-slate-200">{insight.architecture.systemDesign}</p>
               </article>
 
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">HLD</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.highLevelDesign}</p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
                   {insight.architecture.highLevelDesign.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -205,7 +199,7 @@ export default function DashboardPage() {
               </article>
 
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">LLD</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.lowLevelDesign}</p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
                   {insight.architecture.lowLevelDesign.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -222,17 +216,17 @@ export default function DashboardPage() {
         {insight && (
           <section className="mt-10 grid gap-6 lg:grid-cols-3">
             <article className="rounded-3xl border border-white/10 bg-white/5 p-6 lg:col-span-2">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">Summary</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.summary.eyebrow}</p>
               <p className="mt-4 text-lg leading-8 text-slate-100">{insight.summary}</p>
 
               <div className="mt-6 rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-4">
-                <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">Tech lead message</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">{DASHBOARD_COPY.summary.leaderMessage}</p>
                 <p className="mt-3 text-base leading-7 text-cyan-50">{insight.leaderMessage}</p>
               </div>
             </article>
 
             <article className="rounded-3xl border border-amber-400/20 bg-amber-500/5 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-amber-300">Execution risks</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-amber-300">{DASHBOARD_COPY.risks.eyebrow}</p>
               <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-100">
                 {insight.risks.map((risk) => (
                   <li key={risk} className="flex gap-2">
@@ -248,7 +242,7 @@ export default function DashboardPage() {
         {insight && (
           <section className="mt-10 grid gap-6 lg:grid-cols-2">
             <article className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">Roadmap</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.roadmap.eyebrow}</p>
               <div className="mt-5 space-y-4">
                 {insight.roadmap.map((item) => (
                   <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -260,7 +254,7 @@ export default function DashboardPage() {
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">Recommendations</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.recommendations.eyebrow}</p>
               <ul className="mt-5 space-y-4">
                 {insight.recommendations.map((recommendation) => (
                   <li key={recommendation} className="flex gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4 text-sm leading-6 text-slate-100">
