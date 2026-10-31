@@ -8,7 +8,8 @@ export const DEFAULT_IDEA =
   "A platform that helps engineering teams triage incidents, predict delivery risk, and surface leadership-ready operational recommendations in one dashboard.";
 
 export const FALLBACK_AI_INSIGHT = {
-  summary: "The AI guidance service encountered a temporary issue. Retry with a simpler prompt to continue the scenario.",
+  summary:
+    "The AI guidance service encountered a temporary issue. Retry with a simpler prompt to continue the scenario.",
   health: "Needs attention",
   leaderMessage:
     "Even resilient systems occasionally fail, which is why the leadership model must include fallback processes and clear escalation paths.",

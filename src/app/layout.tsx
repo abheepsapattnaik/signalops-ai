@@ -14,15 +14,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SignalOps AI | Tech Lead Portfolio",
-  description: "AI-driven operating dashboard and leadership narrative for a tech lead portfolio project.",
+  description:
+    "AI-driven operating dashboard and leadership narrative for a tech lead portfolio project.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-slate-950">{children}</body>
     </html>
   );

@@ -13,15 +13,13 @@ export async function POST(request: NextRequest) {
     }
 
     const prompt =
-      typeof body?.prompt === "string"
-        ? body.prompt.trim() || FALLBACK_PROMPT
-        : FALLBACK_PROMPT;
+      typeof body?.prompt === "string" ? body.prompt.trim() || FALLBACK_PROMPT : FALLBACK_PROMPT;
     const productIdea = typeof body?.productIdea === "string" ? body.productIdea.trim() : "";
     const team = typeof body?.team === "string" ? body.team : "Platform & AI Ops";
 
     const insight = generateAiInsight(prompt, team, productIdea);
     return NextResponse.json(insight);
-  } catch (error) {
+  } catch {
     return NextResponse.json(FALLBACK_AI_INSIGHT, { status: 500 });
   }
 }

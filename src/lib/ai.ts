@@ -13,10 +13,16 @@ export type ArchitectureInsight = {
 
 export function generateArchitectureFromIdea(idea: string): ArchitectureInsight {
   const cleanedIdea = idea.trim().toLowerCase();
-  const isAiProduct = /ai|assistant|chat|agent|copilot|llm|recommendation|intelligence/.test(cleanedIdea);
-  const isMarketplace = /marketplace|commerce|seller|buyer|orders|checkout|catalog/.test(cleanedIdea);
+  const isAiProduct = /ai|assistant|chat|agent|copilot|llm|recommendation|intelligence/.test(
+    cleanedIdea
+  );
+  const isMarketplace = /marketplace|commerce|seller|buyer|orders|checkout|catalog/.test(
+    cleanedIdea
+  );
   const isRealtime = /realtime|live|chat|stream|presence|websocket|video|audio/.test(cleanedIdea);
-  const isAnalytics = /dashboard|analytics|insights|report|signal|metrics|monitoring/.test(cleanedIdea);
+  const isAnalytics = /dashboard|analytics|insights|report|signal|metrics|monitoring/.test(
+    cleanedIdea
+  );
   const isFintech = /payments|wallet|bank|ledger|transaction|finance|billing/.test(cleanedIdea);
   const isSocial = /social|community|network|feed|posts|followers|events/.test(cleanedIdea);
 
@@ -165,7 +171,7 @@ export type AiInsight = {
 export function generateAiInsight(
   prompt: string,
   team: string = "Platform & AI Ops",
-  productIdea?: string,
+  productIdea?: string
 ): AiInsight {
   const cleanedPrompt = prompt.trim() || "delivery and reliability leadership";
   const cleanedProductIdea = productIdea?.trim() || cleanedPrompt;
@@ -193,21 +199,28 @@ export function generateAiInsight(
   if (isTeamFocused) {
     roadmap.unshift({
       title: "Leadership operating rhythm",
-      rationale: "Create weekly AI-assisted review loops that align roadmaps, risks, and trade-offs across engineering, product, and customer support.",
+      rationale:
+        "Create weekly AI-assisted review loops that align roadmaps, risks, and trade-offs across engineering, product, and customer support.",
     });
   }
 
   const risks = [...TEAM_CONTEXT.risks];
   if (isReliabilityFocused) {
-    risks.unshift("Incidents are likely to recur when alert correlation is incomplete and ownership signals are not consistent.");
+    risks.unshift(
+      "Incidents are likely to recur when alert correlation is incomplete and ownership signals are not consistent."
+    );
   }
 
   const recommendations = [...TEAM_CONTEXT.recommendations];
   if (isDeliveryFocused) {
-    recommendations.unshift("Use AI to highlight release blockers, dependencies, and sequencing risks before a launch decision is made.");
+    recommendations.unshift(
+      "Use AI to highlight release blockers, dependencies, and sequencing risks before a launch decision is made."
+    );
   }
   if (isProductFocused) {
-    recommendations.unshift("Pair AI-generated recommendations with product feedback loops so engineering trade-offs stay grounded in user impact.");
+    recommendations.unshift(
+      "Pair AI-generated recommendations with product feedback loops so engineering trade-offs stay grounded in user impact."
+    );
   }
 
   const ideaArchitecture = generateArchitectureFromIdea(ideaText);

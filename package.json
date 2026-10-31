@@ -6,9 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "node --test",
-    "test:coverage": "node --test --experimental-test-coverage"
+    "test:coverage": "node --test --experimental-test-coverage",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs,json,css,md}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "next": "16.4.3",
@@ -22,6 +31,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "eslint-config-prettier": "^10.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.4.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

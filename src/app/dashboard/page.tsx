@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DEFAULT_IDEA, DEFAULT_PROMPT } from "@/lib/insight-content";
 import { DASHBOARD_COPY } from "@/lib/dashboard-content";
@@ -102,7 +103,11 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    void loadInsight();
+    const initializeInsight = async () => {
+      await loadInsight();
+    };
+
+    void initializeInsight();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,26 +116,32 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-6 py-10">
         <header className="mb-10 flex items-center justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">{DASHBOARD_COPY.header.eyebrow}</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">
+              {DASHBOARD_COPY.header.eyebrow}
+            </p>
             <h1 className="mt-2 text-3xl font-semibold">{DASHBOARD_COPY.header.title}</h1>
           </div>
-          <a
+          <Link
             href="/"
             className="rounded-full border border-cyan-400/50 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
           >
             {DASHBOARD_COPY.header.backLink}
-          </a>
+          </Link>
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
           <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-cyan-950/30">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.productIdea.eyebrow}</p>
+                <p className="text-sm uppercase tracking-[0.25em] text-slate-300">
+                  {DASHBOARD_COPY.productIdea.eyebrow}
+                </p>
                 <h2 className="mt-2 text-2xl font-semibold">{DASHBOARD_COPY.productIdea.title}</h2>
               </div>
               <span className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                {loading ? DASHBOARD_COPY.productIdea.status.analyzing : insight?.health ?? DASHBOARD_COPY.productIdea.status.live}
+                {loading
+                  ? DASHBOARD_COPY.productIdea.status.analyzing
+                  : (insight?.health ?? DASHBOARD_COPY.productIdea.status.live)}
               </span>
             </div>
 
@@ -147,24 +158,34 @@ export default function DashboardPage() {
                 onClick={() => void loadInsight()}
                 className="rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
               >
-                {loading ? DASHBOARD_COPY.productIdea.button.generating : DASHBOARD_COPY.productIdea.button.default}
+                {loading
+                  ? DASHBOARD_COPY.productIdea.button.generating
+                  : DASHBOARD_COPY.productIdea.button.default}
               </button>
             </div>
           </div>
 
           <div className="rounded-3xl border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 to-slate-900 p-6">
-            <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">{DASHBOARD_COPY.leadershipSignal.eyebrow}</p>
+            <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">
+              {DASHBOARD_COPY.leadershipSignal.eyebrow}
+            </p>
             <div className="mt-4 space-y-4">
               <div>
-                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.deliveryHealth}</p>
+                <p className="text-sm text-slate-300">
+                  {DASHBOARD_COPY.leadershipSignal.deliveryHealth}
+                </p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.deliveryHealth}%</p>
               </div>
               <div>
-                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.aiConfidence}</p>
+                <p className="text-sm text-slate-300">
+                  {DASHBOARD_COPY.leadershipSignal.aiConfidence}
+                </p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.aiConfidence}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-300">{DASHBOARD_COPY.leadershipSignal.riskTrend}</p>
+                <p className="text-sm text-slate-300">
+                  {DASHBOARD_COPY.leadershipSignal.riskTrend}
+                </p>
                 <p className="mt-2 text-4xl font-semibold">{leadershipSignals.riskTrend}</p>
               </div>
             </div>
@@ -175,19 +196,29 @@ export default function DashboardPage() {
           <section className="mt-10 rounded-3xl border border-violet-400/20 bg-violet-500/5 p-6">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.eyebrow}</p>
-                <h2 className="mt-2 text-2xl font-semibold text-white">{DASHBOARD_COPY.architecture.title}</h2>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">
+                  {DASHBOARD_COPY.architecture.eyebrow}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-white">
+                  {DASHBOARD_COPY.architecture.title}
+                </h2>
               </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.systemDesign}</p>
-                <p className="mt-4 text-sm leading-7 text-slate-200">{insight.architecture.systemDesign}</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">
+                  {DASHBOARD_COPY.architecture.cards.systemDesign}
+                </p>
+                <p className="mt-4 text-sm leading-7 text-slate-200">
+                  {insight.architecture.systemDesign}
+                </p>
               </article>
 
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.highLevelDesign}</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">
+                  {DASHBOARD_COPY.architecture.cards.highLevelDesign}
+                </p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
                   {insight.architecture.highLevelDesign.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -199,7 +230,9 @@ export default function DashboardPage() {
               </article>
 
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
-                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">{DASHBOARD_COPY.architecture.cards.lowLevelDesign}</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-violet-300">
+                  {DASHBOARD_COPY.architecture.cards.lowLevelDesign}
+                </p>
                 <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
                   {insight.architecture.lowLevelDesign.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -216,17 +249,23 @@ export default function DashboardPage() {
         {insight && (
           <section className="mt-10 grid gap-6 lg:grid-cols-3">
             <article className="rounded-3xl border border-white/10 bg-white/5 p-6 lg:col-span-2">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.summary.eyebrow}</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">
+                {DASHBOARD_COPY.summary.eyebrow}
+              </p>
               <p className="mt-4 text-lg leading-8 text-slate-100">{insight.summary}</p>
 
               <div className="mt-6 rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-4">
-                <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">{DASHBOARD_COPY.summary.leaderMessage}</p>
+                <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">
+                  {DASHBOARD_COPY.summary.leaderMessage}
+                </p>
                 <p className="mt-3 text-base leading-7 text-cyan-50">{insight.leaderMessage}</p>
               </div>
             </article>
 
             <article className="rounded-3xl border border-amber-400/20 bg-amber-500/5 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-amber-300">{DASHBOARD_COPY.risks.eyebrow}</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-amber-300">
+                {DASHBOARD_COPY.risks.eyebrow}
+              </p>
               <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-100">
                 {insight.risks.map((risk) => (
                   <li key={risk} className="flex gap-2">
@@ -242,10 +281,15 @@ export default function DashboardPage() {
         {insight && (
           <section className="mt-10 grid gap-6 lg:grid-cols-2">
             <article className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.roadmap.eyebrow}</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">
+                {DASHBOARD_COPY.roadmap.eyebrow}
+              </p>
               <div className="mt-5 space-y-4">
                 {insight.roadmap.map((item) => (
-                  <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                  >
                     <h3 className="text-base font-semibold text-cyan-200">{item.title}</h3>
                     <p className="mt-2 text-sm leading-6 text-slate-300">{item.rationale}</p>
                   </div>
@@ -254,10 +298,15 @@ export default function DashboardPage() {
             </article>
 
             <article className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">{DASHBOARD_COPY.recommendations.eyebrow}</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-300">
+                {DASHBOARD_COPY.recommendations.eyebrow}
+              </p>
               <ul className="mt-5 space-y-4">
                 {insight.recommendations.map((recommendation) => (
-                  <li key={recommendation} className="flex gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4 text-sm leading-6 text-slate-100">
+                  <li
+                    key={recommendation}
+                    className="flex gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4 text-sm leading-6 text-slate-100"
+                  >
                     <span className="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-400" />
                     <span>{recommendation}</span>
                   </li>
