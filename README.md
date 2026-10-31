@@ -81,6 +81,64 @@ This keeps the project portable while allowing real AI output when an API key is
 
 ## Run locally
 
+### Backend + PostgreSQL
+
+This project includes a convenience script that starts the PostgreSQL container and launches the Spring Boot backend in one command.
+
+```bash
+chmod +x start-local.sh
+./start-local.sh
+```
+
+The script will:
+
+- start the Docker PostgreSQL container from `backend/docker-compose.yml`
+- detect the local JDK and Maven installation automatically
+- run the backend with:
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+If the script finds Java or Maven missing, set them manually first:
+
+```bash
+export JAVA_HOME=/path/to/your/jdk
+export PATH="$JAVA_HOME/bin:$PATH"
+export PATH="/path/to/maven/bin:$PATH"
+```
+
+Then run:
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+The backend expects PostgreSQL on `localhost:5432` with these local development credentials:
+
+- database: `signalops_ai`
+- username: `signalops`
+- password: `signalops`
+
+### Stop services
+
+Use this to stop both the backend and the PostgreSQL container:
+
+```bash
+chmod +x stop-local.sh
+./stop-local.sh
+```
+
+The script will:
+
+- stop any running Spring Boot backend process
+- stop the Docker Compose PostgreSQL container
+- kill any leftover local PostgreSQL process still listening on port 5432
+
+### Frontend
+
 ```bash
 cd frontend
 npm install
