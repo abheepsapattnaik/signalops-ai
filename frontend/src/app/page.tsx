@@ -49,12 +49,20 @@ export default function Home() {
               Interview story
             </a>
           </nav>
-          <Link
-            href="/dashboard"
-            className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-          >
-            Open demo
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/chat"
+              className="rounded-full border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-500/20"
+            >
+              Open chat
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+            >
+              Open demo
+            </Link>
+          </div>
         </header>
 
         <section className="grid items-center gap-10 pb-16 pt-20 lg:grid-cols-[1.1fr_0.9fr]">

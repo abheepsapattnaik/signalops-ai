@@ -79,6 +79,29 @@ AI_BASE_URL=https://openrouter.ai/api/v1
 
 This keeps the project portable while allowing real AI output when an API key is available.
 
+## Private RAG chatbot
+
+The private chatbot keeps the heavy retrieval and orchestration logic in the Java backend so the frontend remains a thin client. The backend now includes:
+
+- document ingestion and chunking for private knowledge repositories
+- session-based chat history persistence for private conversations
+- a retrieval layer that scores relevant chunks against the user's question
+- a backend API for creating sessions and sending a message
+
+Example API usage:
+
+```bash
+curl -X POST http://localhost:8080/api/chat/sessions \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Project onboarding","userId":"alice"}'
+
+curl -X POST http://localhost:8080/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"sessionId":"<session-id>","userId":"alice","message":"What are our escalation steps?"}'
+```
+
+The current implementation uses a provider-agnostic retrieval pattern that is ready for future vector database or embedding-provider integration without changing the API contracts.
+
 ## Run locally
 
 ### Backend + PostgreSQL

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const aiSource = readFileSync(new URL("../src/lib/ai.ts", import.meta.url), "utf8");
+const ragSource = readFileSync(new URL("../src/lib/rag-chat.ts", import.meta.url), "utf8");
 const insightContentSource = readFileSync(
   new URL("../src/lib/insight-content.ts", import.meta.url),
   "utf8"
@@ -61,4 +62,19 @@ test("API route respects explicit source selection and falls back only when AI i
   assert.match(routeSource, /source === "local"/);
   assert.match(routeSource, /fetchInsightFromAiAgent/);
   assert.match(routeSource, /fallbackInsight/);
+});
+
+test("private RAG helper ranks context and builds a grounded prompt", () => {
+  assert.match(ragSource, /scoreContextMatch/);
+  assert.match(ragSource, /rankRelevantContext/);
+  assert.match(ragSource, /buildPrivateChatPrompt/);
+  assert.match(ragSource, /private knowledge/i);
+});
+
+test("private chat API route exposes a backend-friendly response payload", () => {
+  const chatRouteSource = readFileSync(new URL("../src/app/api/chat/route.ts", import.meta.url), "utf8");
+
+  assert.match(chatRouteSource, /buildPrivateChatPrompt/);
+  assert.match(chatRouteSource, /rankRelevantContext/);
+  assert.match(chatRouteSource, /NextResponse\.json/);
 });

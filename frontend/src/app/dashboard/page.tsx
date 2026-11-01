@@ -86,12 +86,20 @@ export default function DashboardPage() {
               {DASHBOARD_COPY.header.title}
             </h1>
           </div>
-          <Link
-            href="/"
-            className="rounded-full border border-cyan-400/50 bg-cyan-500/5 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
-          >
-            {DASHBOARD_COPY.header.backLink}
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/chat"
+              className="rounded-full border border-violet-400/40 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-200 transition hover:bg-violet-500/15"
+            >
+              Private chat
+            </Link>
+            <Link
+              href="/"
+              className="rounded-full border border-cyan-400/50 bg-cyan-500/5 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-500/10"
+            >
+              {DASHBOARD_COPY.header.backLink}
+            </Link>
+          </div>
         </header>
 
         <section className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
