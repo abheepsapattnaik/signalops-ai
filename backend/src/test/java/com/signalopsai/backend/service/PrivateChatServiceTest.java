@@ -16,14 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,5 +75,28 @@ class PrivateChatServiceTest {
         assertNotNull(response);
         assertNotNull(response.getAnswer());
         assertTrue(response.getAnswer().contains("knowledge base") || response.getAnswer().contains("private knowledge"));
+    }
+
+    @Test
+    void rejectsBlankMessage() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> privateChatService.sendMessage(new ChatRequest(null, "   ", "alice"))
+        );
+
+        assertEquals("Message cannot be blank", exception.getMessage());
+    }
+
+    @Test
+    void ingestsDocumentAndSplitsIntoChunks() {
+        KnowledgeDocument document = new KnowledgeDocument("Ops runbook", "manual", "Follow the incident plan. Escalate immediately after triage.");
+        when(knowledgeDocumentRepository.save(any(KnowledgeDocument.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(knowledgeDocumentChunkRepository.save(any(KnowledgeDocumentChunk.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(embeddingService.embed(any())).thenReturn(new double[] {0.1, 0.2, 0.3});
+
+        KnowledgeDocument saved = privateChatService.ingestDocument("Ops runbook", "manual", "Follow the incident plan. Escalate immediately after triage.");
+
+        assertNotNull(saved);
+        assertEquals("Ops runbook", saved.getTitle());
     }
 }
